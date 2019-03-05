@@ -23,12 +23,8 @@ French
 RGB
 </button>
 
-<button>
-Exadecimal
-</button>
-
-<button>
-Long
+<button onclick="showTab('hexa_tab');">
+Hexadecimal
 </button>
 
 <button onclick="showTab('names_tab');">
@@ -84,11 +80,68 @@ Convertion from RGB to others colors
 
 <tr>
 <th>
+<label for="rgb2hexa">Equival hexadecimal:</label>
+</th>
+<td>
+<input type="text" name="rgb2hexa" id="rgb2hexa" value="" />
+</td>
+</tr>
+
+<tr>
+<th>
 <label for="rgb2name">Equival name:</label>
 </th>
 <td>
 <input type="text" name="rgb2name" id="rgb2name" value="" />
-</span>
+</td>
+</tr>
+
+</table>
+
+
+</form>
+</div>
+
+<div class="tab" id="hexa_tab" style="display: none;">
+
+<h2>
+Convertion from hexadecimal to others colors
+</h2>
+
+<form onSubmit="return actualizeHexaColor();">
+
+<table>
+
+<tr>
+<th>
+<label for="hexa_color">Hexadecimal color:</label>
+</th>
+<td>
+<input type="text" name="hexa_color" id="hexa_color" />
+</td>
+</tr>
+
+<tr>
+<td colspan="2">
+<input type="submit" value="Actualize" />
+</td>
+</tr>
+
+<tr>
+<th>
+<label for="hexa2rgb">Equival RGB:</label>
+</th>
+<td>
+<input type="text" name="hexa2rgb" id="hexa2rgb" value="" />
+</td>
+</tr>
+
+<tr>
+<th>
+<label for="hexa2name">Equival name:</label>
+</th>
+<td>
+<input type="text" name="hexa2name" id="hexa2name" value="" />
 </td>
 </tr>
 
@@ -130,7 +183,6 @@ Convertion from named to others colors
 </th>
 <td>
 <input type="text" name="name2rgb" id="name2rgb" value="" />
-</span>
 </td>
 </tr>
 
@@ -238,6 +290,8 @@ elm[i].style.display = "block";
 elm[i].style.display = "none";
 } // End If
 } // End For
+// we say it
+saystring(tabID + " focus");
 } // End Function
 
 function increaseRGBValue(elm){
@@ -288,8 +342,32 @@ document.body.style= "background-color: " + s + ";";
 // we find the associated name of the color
 s = getNearestColorName(s);
 document.getElementById("rgb2name").value = s;
-// and we say it
-saystring(s);
+// we find the hexadecimal equival of the color
+var hexa = "#" + convertRGBToHexaColor(r, g, b);
+document.getElementById("rgb2hexa").value = hexa;
+// and we say the results
+saystring(s + ", " + hexa);
+return false;
+} catch(ex){
+alert(ex.message);
+} // End Try
+} // End Function
+
+function actualizeHexaColor(){
+//
+try{
+var hexa = document.getElementById("hexa_color").value;
+// we get the rgb equival of the color
+var rgb = convertHexaToRGBColor(hexa);
+var sRGB = "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
+document.getElementById("hexa2rgb").value = sRGB;
+// we assign this color to the background of the body tag
+document.body.style= "background-color: " + sRGB + ";";
+// we find the associated name of the color
+s = getNearestColorName(sRGB);
+document.getElementById("hexa2name").value = s;
+// and we say the results
+saystring(s + ", " + sRGB);
 return false;
 } catch(ex){
 alert(ex.message);
@@ -316,7 +394,7 @@ alert(ex.message);
 } // End Try
 } // End Function
 
-function convertExaToRGBColor(color){
+function convertHexaToRGBColor(color){
 // convert from exadecimal to rgb color code
 //
 // Check for # infront of the value, if it's there, strip it
@@ -332,6 +410,26 @@ function convertExaToRGBColor(color){
 // the return
   return rgbColor;
  } // end function
+
+function convertRGBToHexaColor(r, g, b){
+//
+var i;
+var tbl =[r, g, b];
+// création de la fonction de convertion de valeur
+var convertValue = function (c){
+var hex = Number(c).toString(16);
+  if (hex.length < 2) {
+       hex = "0" + hex;
+  } // end if
+  return hex;
+};
+// parcours et conversion des valeurs
+for(i=0; i<tbl.length; i++){
+tbl[i] = convertValue(tbl[i]);
+} // End For
+// we return the result
+  return tbl.join("");
+} // end function
 
 function getNearestColor(lRed, lGreen, lBlue){
 // get the nearest rgb color
@@ -433,7 +531,7 @@ if(c.indexOf("rgb")>=0 && c.indexOf("(")>0 && c.indexOf(")")>0){
 // nothing
 } else { // its a exadecimal code
 // we convert it to rgb
-var col = convertExaToRGBColor(c);
+var col = convertHexaToRGBColor(c);
 c = "rgb(" + col.r + "," + col.g + "," + col.b + ")";
 } // End If
 // we get the red, green and blue value of the color code
