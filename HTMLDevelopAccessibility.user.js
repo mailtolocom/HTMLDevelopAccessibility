@@ -65,17 +65,17 @@ tColors[i].g = parseInt(s.substring(3, 6));
 tColors[i].b = parseInt(s.substring(6, 9));
 } // End For
 // we are going to create the accessibility controler if it doesn't exist
-elm = document.getElementById("controler_zone_yyd");
+elm = document.getElementById("explorer_zone_yyd");
 if(elm == null){ // non encore existante
 // we create this zone
 elm = document.createElement("select");
-elm.setAttribute("id", "controler_zone_yyd");
+elm.setAttribute("id", "explorer_zone_yyd");
 elm.setAttribute("aria-label", "Accessible dom explorer. Use arrow key to explore the dom");
 elm.setAttribute("style", "display: none;");
 // we add some events
-elm.addEventListener('keydown', onControlerKeyDown, true);
-elm.addEventListener('blur', onControlerBlur, true);
-// on l'ajoute à la fin de la balise body
+elm.addEventListener('keydown', onExplorerKeyDown, true);
+elm.addEventListener('blur', onExplorerBlur, true);
+// we add it to the end of the body tag
 document.getElementsByTagName("body")[0].appendChild(elm);
 } // end if doesn't exist yet
 // first listing of dom elements
@@ -114,8 +114,8 @@ mouseX = e.pageX;
 mouseY = e.pageY;
 } // end function
 
-function onControlerKeyDown(e){
-// à while pressing keys on the accessibility controler
+function onExplorerKeyDown(e){
+// à while pressing keys on the accessible dom explorer
 var k = e.keyCode;
 // saystring(k);
 
@@ -184,6 +184,13 @@ sayCurrentNodeBorders();
 return true;
 } // End If
 
+
+// m = 77 to get the margins
+if(k == 77){
+sayCurrentNodeMargin();
+return true;
+} // End If
+
 // d = 68 to get the dimensions
 if(k == 68){
 sayCurrentNodeDimensions();
@@ -198,7 +205,20 @@ return true;
 
 // f = 70 to find a node
 if(k == 70){
+if(e.shiftKey==false && e.ctrlKey==false && e.altKey==false){
+sayCurrentNodeFontFamily();
+return true;
+} else if(e.shiftKey==true && e.ctrlKey==false && e.altKey==false){
 findNode();
+return true;
+} // end if
+} // End If
+
+// f3 = 114 to search next 
+if(k == 114){
+e.preventDefault();
+saystring("next");
+findNext();
 return true;
 } // End If
 
@@ -207,16 +227,23 @@ if(k == 13){
 promptCurrentNode();
 return true;
 } // End If
+
+// z = 90 for testing
+if(k == 90){
+testor();
+return true;
+} // End If
+
 } // end function
 
-function onControlerBlur(){
-// when the controler loose focus
-document.getElementById("controler_zone_yyd").style.display = "none";
+function onExplorerBlur(){
+// when the dom explorer loose focus
+document.getElementById("explorer_zone_yyd").style.display = "none";
 } // End Function
 
 function showControler(){
 // show or hide the accessibility controler
-var elm = document.getElementById("controler_zone_yyd");
+var elm = document.getElementById("explorer_zone_yyd");
 //
 elm.style.display = "block";
 elm.focus();
@@ -481,7 +508,7 @@ if(n==null || n=="br" || n=="script" || n=="link" || n=="style" || n=="noscript"
 if(elm[i].id == "message_to_say_yyd"){
 continue;
 } // End If
-if(elm[i].id == "controler_zone_yyd"){
+if(elm[i].id == "explorer_zone_yyd"){
 continue;
 } // End If
 if(1 == 1){ // deactivated
@@ -647,6 +674,14 @@ var elm = currentNodeChildren[currentPos];
 saystring("InnerText=" + elm.innerText);
 } // End Function
 
+function sayCurrentNodeFontFamily(){
+//
+var s = "";
+var elm = currentNodeChildren[currentPos];
+s =rzGetStyle(elm, "font-family");
+saystring("font-family=" + s);
+} // End Function
+
 function sayCurrentNodeColors(){
 //
 var s = "";
@@ -664,8 +699,23 @@ saystring(s);
 
 function sayCurrentNodeBorders(){
 //
-var s = "";
+var s = "Borders=";
+var v = "";
 var elm = currentNodeChildren[currentPos];
+// border left
+v = rzGetStyle(elm, "border-left");
+s = s + " left:" + v;
+// border top
+v = rzGetStyle(elm, "border-top");
+s = s + " top:" + v;
+// border right
+v = rzGetStyle(elm, "border-right");
+s = s + " right:" + v;
+// border bottom
+v = rzGetStyle(elm, "border-bottom");
+s = s + " bottom:" + v;
+// and we say it
+saystring(s);
 } // End Function
 
 function sayCurrentNodeDimensions(){
@@ -703,6 +753,27 @@ saystring(s);
 } // End Function
 
 function sayCurrentNodeMargin(){
+// to say the margins
+var s = "Margins=";
+var v = "";
+var elm = currentNodeChildren[currentPos];
+// marginleft
+v = rzGetStyle(elm, "margin-left");
+s = s + " left:" + v;
+// margintop
+v = rzGetStyle(elm, "margin-top");
+s = s + " top:" + v;
+// marginright
+v = rzGetStyle(elm, "margin-right");
+s = s + " right:" + v;
+// marginbottom
+v = rzGetStyle(elm, "margin-bottom");
+s = s + " bottom:" + v;
+// and we say it
+saystring(s);
+
+// this part has been deactivated
+if(0 == 1){
 // we find the width and the height
 var s = "";
 var elm = currentNodeChildren[currentPos];
@@ -715,6 +786,7 @@ var mBottom = elm.offsetHeight - elm.clientTop - elm.clientHeight;
 s = "Borders left=" + mLeft + ", top=" + mTop + ", right=" + mRight + ", bottom=" + mBottom;
 //
 saystring(s);
+} // end if deactivation
 } // End Function
 
 function describeCurrentNode(showInPrompt, parentLevel=0){
@@ -1044,6 +1116,12 @@ document.getElementById("message_to_say_yyd").innerText = "";
 };
 this.timeout_yyd = window.setTimeout(clearSaidMessage, 500);
 } // end function
+
+function testor(){
+// for testing
+// related to the letter z
+alert("testing is OK");
+} // End Function
 
 // we initialize the saystring function
 saystring("");

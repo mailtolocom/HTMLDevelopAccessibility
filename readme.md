@@ -15,6 +15,7 @@ While moving or using other shortcuts, informations on each important nodes are 
 * position (left and top)
 * dimensions (width and height)
 * colors (background and text) by their code and approximate name
+* font family
 * margin
 * inner text
 * and so on
@@ -23,13 +24,15 @@ While moving or using other shortcuts, informations on each important nodes are 
 
 These are the main keyboard shortcuts added to the web browser:
 
-* F2 = say informations on the element under the cursor in the pweb page;
+* F2 = say informations on the element under the cursor in the pweb page. When pressed quickly several times, give instead information for a parent of that focussed element;
 * Ctrl+F2 = move the focus to the virtual dom explorer
 * arro keys = move in the treeview of the dom in the virtual dom explorer
 * b = say the borders of the current selected node
 * c = say the colors (background and text) of the current selected node
 * d = say the dimensions (width and height) of the current selected node
-* f = open e search dialog to find a node by its tag name
+* f = say the font family in the current selected node;
+* shift+f = open e search dialog to find a node by its tag name
+* f3 = search the next node with the criteria given in the search dialog;
 * m = say the margins in the current selected node
 * n = say the type, name, and class of the current selected node
 * p = say the absolute positions (left and top) of the current selected node
